@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
+import java.util.Vector;
 
 public class client {
     public static void main(String[] args) {
@@ -10,6 +11,8 @@ public class client {
         }
         String serverName = args[0]; // Server address
         int port = Integer.parseInt(args[1]); // Server port
+        // Vector to store round trip times
+        Vector<Long> roundTripTimes = new Vector<>();
 
         try {
             // Establish connection to the server
@@ -21,20 +24,83 @@ public class client {
             BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
             // Collect user input
+            String hellomsg = inFromServer.readLine();
+            System.out.println("Received from server " + hellomsg);
+
             Scanner scanner = new Scanner(System.in);
-            System.out.print("Enter message: ");
-            String message = scanner.nextLine();
+            try {
+                while (true) {
+                    System.out.print("Enter message: ");
+                    String message = scanner.nextLine();
 
-            // Send message to server
-            outToServer.writeBytes(message + '\n');
+                    // get start time
+                    long startTime = System.currentTimeMillis();
 
-            // Read response from server
-            String response = inFromServer.readLine();
-            System.out.println("Response from server: " + response);
+                    // send msg
+                    outToServer.writeBytes(message + '\n');
 
-            // Close the connection
-            clientSocket.close();
-            scanner.close();
+                    // read response
+                    String response = inFromServer.readLine();
+
+                    // record end time
+                    long endTime = System.currentTimeMillis();
+
+                    // calculate RTT
+                    long roundTripTime = endTime - startTime;
+
+                    if (response.equalsIgnoreCase("disconnected")) {
+                        System.out.println("exit");
+                        break;
+                    }
+                    System.out.println("Response from server: " + response);
+                    System.out.println("Round trip time: " + roundTripTime + " ms");
+                    roundTripTimes.add(roundTripTime);
+                }
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+                e.printStackTrace();
+            } finally {
+                clientSocket.close();
+                scanner.close();
+
+                if (!roundTripTimes.isEmpty()) {
+                    // print all RTTs for testing
+                    System.out.println("RTTs: " + roundTripTimes);
+
+                    // get min, max, avg
+                    long min = roundTripTimes.get(0);
+                    long max = roundTripTimes.get(0);
+                    long total = 0;
+                    for (int i = 0; i < roundTripTimes.size(); i++) {
+                        total += roundTripTimes.get(i);
+                        if (roundTripTimes.get(i) < min) {
+                            min = roundTripTimes.get(i);
+                        }
+                        if (roundTripTimes.get(i) > max) {
+                            max = roundTripTimes.get(i);
+                        }
+                    }
+
+                    double mean = total / roundTripTimes.size();
+
+                    // calculate variance
+                    double variance = 0;
+                    for (int i = 0; i < roundTripTimes.size(); i++) {
+                        variance += Math.pow(roundTripTimes.get(i) - mean, 2);
+                    }
+                    variance /= roundTripTimes.size();
+
+                    // standard deviation is just sqrt of variance
+                    double standardDeviation = Math.sqrt(variance);
+
+
+                    System.out.println("Minimum RTT: " + min + " ms");
+                    System.out.println("Maximum RTT: " + max + " ms");
+                    System.out.println("Mean RTT: " + mean + " ms");
+                    System.out.println("Variance of RTT: " + variance + " ms");
+                    System.out.println("Standard Deviation of RTT: " + standardDeviation + " ms");
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
