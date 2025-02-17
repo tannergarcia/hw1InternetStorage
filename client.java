@@ -5,7 +5,11 @@ import java.util.Scanner;
 public class client {
     public static void main(String[] args) {
         String serverName = "localhost"; // Server address
-        int port = 6789; // Server port
+        if (args.length < 1) {
+            System.out.println("Usage: java client <port>");
+            return;
+        }
+        int port = Integer.parseInt(args[0]); // Server port
 
         try {
             // Establish connection to the server

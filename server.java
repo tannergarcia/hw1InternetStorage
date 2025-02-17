@@ -3,7 +3,12 @@ import java.net.*;
 
 public class server {
     public static void main(String[] args) {
-        int port = 6789; // Port number to listen on
+        if (args.length < 1) {
+            System.out.println("Usage: java server <port number>");
+            return;
+        }
+
+        int port = Integer.parseInt(args[0]); // Port number to listen on
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Server is listening on port " + port);
@@ -33,9 +38,19 @@ class ClientHandler extends Thread {
              BufferedReader reader = new BufferedReader(new InputStreamReader(input));
              OutputStream output = socket.getOutputStream();
              PrintWriter writer = new PrintWriter(output, true)) {
-
+            writer.println("Hello!");
             String text;
             while ((text = reader.readLine()) != null) {
+                System.out.println("Received: " + text);
+                if (!text.matches("[A-Za-z]+")) {
+                    writer.println("Invalid input: only letters are allowed. Please try again.");
+                    System.out.println("Received non alphabet input");
+                    continue;
+                }
+                if (text.equalsIgnoreCase("bye")) {
+                    writer.println("disconnected");
+                    break;
+                }
                 String capitalizedText = text.toUpperCase();
                 writer.println(capitalizedText);
             }
