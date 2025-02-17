@@ -42,7 +42,7 @@ class ClientHandler extends Thread {
             String text;
             while ((text = reader.readLine()) != null) {
                 System.out.println("Received: " + text);
-                if (!text.matches("[A-Za-z]+")) {
+                if (!text.matches("[A-Za-z ]+")) {
                     writer.println("Invalid input: only letters are allowed. Please try again.");
                     System.out.println("Received non alphabet input");
                     continue;
