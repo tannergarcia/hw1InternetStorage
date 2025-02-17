@@ -4,12 +4,12 @@ import java.util.Scanner;
 
 public class client {
     public static void main(String[] args) {
-        String serverName = "localhost"; // Server address
-        if (args.length < 1) {
-            System.out.println("Usage: java client <port>");
+        if (args.length < 2) {
+            System.out.println("Usage: java client <server> <port>");
             return;
         }
-        int port = Integer.parseInt(args[0]); // Server port
+        String serverName = args[0]; // Server address
+        int port = Integer.parseInt(args[1]); // Server port
 
         try {
             // Establish connection to the server
