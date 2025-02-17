@@ -12,7 +12,7 @@ public class client {
         String serverName = args[0]; // Server address
         int port = Integer.parseInt(args[1]); // Server port
         // Vector to store round trip times
-        Vector<Long> roundTripTimes = new Vector<>();
+        Vector<Double> roundTripTimes = new Vector<>();
 
         try {
             // Establish connection to the server
@@ -54,7 +54,7 @@ public class client {
                     }
                     System.out.println("Response from server: " + response);
                     System.out.println("Round trip time: " + roundTripTime + " ms");
-                    roundTripTimes.add(roundTripTime);
+                    roundTripTimes.add((double) roundTripTime);
                 }
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
@@ -68,9 +68,9 @@ public class client {
                     System.out.println("RTTs: " + roundTripTimes);
 
                     // get min, max, avg
-                    long min = roundTripTimes.get(0);
-                    long max = roundTripTimes.get(0);
-                    long total = 0;
+                    double min = 0;
+                    double max = 0;
+                    double total = 0;
                     for (int i = 0; i < roundTripTimes.size(); i++) {
                         total += roundTripTimes.get(i);
                         if (roundTripTimes.get(i) < min) {
