@@ -68,12 +68,12 @@ public class client {
                     System.out.println("RTTs: " + roundTripTimes);
 
                     // get min, max, avg
-                    double min = 0;
+                    double min = -1;
                     double max = 0;
                     double total = 0;
                     for (int i = 0; i < roundTripTimes.size(); i++) {
                         total += roundTripTimes.get(i);
-                        if (roundTripTimes.get(i) < min) {
+                        if (roundTripTimes.get(i) < min || min == -1) {
                             min = roundTripTimes.get(i);
                         }
                         if (roundTripTimes.get(i) > max) {
