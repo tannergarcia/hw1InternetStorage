@@ -6,7 +6,7 @@ import java.util.Vector;
 public class client {
     public static void main(String[] args) {
         if (args.length < 2) {
-            System.out.println("Usage: java client <    server> <port>");
+            System.out.println("Usage: java client <server> <port>");
             return;
         }
         String serverName = args[0]; // Server address
