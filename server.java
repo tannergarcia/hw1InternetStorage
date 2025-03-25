@@ -58,7 +58,9 @@ class ClientHandler extends Thread {
                 // Disconnect if "bye" was sent by client
                 if (text.equalsIgnoreCase("bye")) {
                     writer.println("disconnected");
-                    System.exit(1);
+                    System.out.println("Client disconnected, closing connection but leaving server running");
+                    System.out.println("Press Crtl+C to stop the server");
+                    break;
                 }
 
                 // Send back capitalized input if valid
